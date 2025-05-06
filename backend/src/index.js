@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import process from "process";
 import { dbConnection } from "./libs/db.js";
 import { router as userRouter } from "./routes/user.routes.js";
+import { router as authRouter } from "./routes/auth.routes.js";
 import { router as noteRouter } from "./routes/note.routes.js";
 import { errorHandler } from "./middlewares/error.middleware.js";
 
@@ -28,7 +29,8 @@ app.get("/status", (_, res) => {
   });
 });
 
-app.use("/api/v1", userRouter);
+app.use("/api/v1/", authRouter);
+app.use("/api/v1/profile", userRouter);
 app.use("/api/v1/notes", noteRouter);
 
 app.use(errorHandler);
