@@ -3,6 +3,8 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import process from "process";
 import { dbConnection } from "./libs/db.js";
+import { router as userRouter } from "./routes/user.routes.js";
+import { errorHandler } from "./middlewares/error.middleware.js";
 
 dotenv.config();
 
@@ -11,7 +13,7 @@ const app = express();
 
 app.use(express.json());
 
-app.get("/status", (req, res) => {
+app.get("/status", (_, res) => {
   const dbStates = mongoose.STATES;
   const dbState = Object.keys(dbStates).find(
     (key) => dbStates[key] === mongoose.connection.readyState,
@@ -24,6 +26,10 @@ app.get("/status", (req, res) => {
     dbState,
   });
 });
+
+app.use("/api/v1", userRouter);
+
+app.use(errorHandler);
 
 app.listen(PORT, async () => {
   try {
