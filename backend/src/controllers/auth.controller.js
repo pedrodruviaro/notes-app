@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import process from "node:process";
 import { User } from "../models/user.model.js";
 import { doesPasswordsMatch, hashPassword } from "../utils/password.js";
+import { HttpError } from "../utils/httpError.js";
 
 export const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
@@ -10,13 +11,11 @@ export const login = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email: email });
 
   if (!user) {
-    res.status(400);
-    throw new Error("Invalid email or password");
+    throw new HttpError("Invalid email or password", 500);
   }
 
   if (!(await doesPasswordsMatch(password, user.password))) {
-    res.status(400);
-    throw new Error("Invalid email or password");
+    throw new HttpError("Invalid email or password", 500);
   }
 
   const token = jwt.sign(
@@ -40,8 +39,7 @@ export const register = asyncHandler(async (req, res) => {
   });
 
   if (doesUserExists) {
-    res.status(400);
-    throw new Error("Username or email already taken");
+    throw new HttpError("Username or email already taken", 400);
   }
 
   const hashedPassword = await hashPassword(password);

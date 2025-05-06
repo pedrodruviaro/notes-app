@@ -1,17 +1,30 @@
-import { ERRORS } from "../contants/errors.js";
-import { ZodError } from "zod";
+import mongoose from "mongoose";
 import process from "process";
+import { ZodError } from "zod";
 
-const errorHandler = (err, _, res) => {
-  const statusCode = res.statusCode !== 200 ? res.statusCode : 500;
+// eslint-disable-next-line no-unused-vars
+const errorHandler = (err, req, res, next) => {
+  const statusCode = err.statusCode || 500;
+
   res.status(statusCode);
 
   const responseObject = {
-    message: err.message,
+    title: "Error",
+    message: err.message || "Something went wrong",
   };
 
+  if (err instanceof mongoose.Error.ValidationError) {
+    res.status(400);
+    responseObject.title = "Validation Error";
+    responseObject.details = Object.values(err.errors).map((e) => ({
+      path: e.path,
+      message: e.message,
+    }));
+  }
+
   if (err instanceof ZodError) {
-    responseObject.message = "Validation Error";
+    res.status(400);
+    responseObject.title = "Validation Error";
     responseObject.details = err.errors.map((e) => ({
       path: e.path.join("."),
       message: e.message,
@@ -19,29 +32,8 @@ const errorHandler = (err, _, res) => {
   }
 
   if (process.env.NODE_ENV === "development") {
-    responseObject.stackTrace = err.stack ?? "";
+    responseObject.stackTrace = err.stack;
     responseObject.name = err.name;
-  }
-
-  switch (statusCode) {
-    case ERRORS.VALIDATION_ERROR:
-      responseObject.title = "Validation Error";
-      break;
-    case ERRORS.NOT_FOUND:
-      responseObject.title = "Not Found";
-      break;
-    case ERRORS.UNAUTHORIZED:
-      responseObject.title = "Unauthorized";
-      break;
-    case ERRORS.FORBIDDEN:
-      responseObject.title = "Forbidden";
-      break;
-    case ERRORS.SERVER_ERROR:
-      responseObject.title = "Internal server error";
-      break;
-    default:
-      responseObject.title = "Unexpected error";
-      break;
   }
 
   res.json(responseObject);

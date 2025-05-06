@@ -1,9 +1,11 @@
 import { z } from "zod";
 
 export const userSchema = z.object({
-  fullname: z.string({
-    required_error: "Fullname is required",
-  }),
+  fullname: z
+    .string({
+      required_error: "Fullname is required",
+    })
+    .min(5),
   email: z
     .string({
       required_error: "Email is required",
@@ -26,6 +28,7 @@ export const updateUserSchema = z.object({
     .string({
       required_error: "Fullname is required",
     })
+    .min(5)
     .optional(),
   password: z
     .string({
