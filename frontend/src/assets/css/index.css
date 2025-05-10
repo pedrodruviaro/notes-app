@@ -197,6 +197,11 @@
   }
 }
 
+@utility container {
+  padding-inline: 1.5rem;
+  margin-inline: auto;
+}
+
 a,
 button {
   @apply cursor-pointer;

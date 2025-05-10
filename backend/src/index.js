@@ -7,12 +7,14 @@ import { router as userRouter } from "./routes/user.routes.js";
 import { router as authRouter } from "./routes/auth.routes.js";
 import { router as noteRouter } from "./routes/note.routes.js";
 import { errorHandler } from "./middlewares/error.middleware.js";
+import cors from "cors";
 
 dotenv.config();
 
 const PORT = process.env.PORT || 8000;
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 
 app.get("/status", (_, res) => {

@@ -16,7 +16,7 @@ export const userSchema = z.object({
   }),
   password: z
     .string({
-      required_error: "Password is required",
+      required_error: "Password !!is required",
     })
     .min(6),
   bio: z.string().optional(),

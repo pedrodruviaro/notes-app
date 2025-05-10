@@ -8,5 +8,5 @@ export async function doesPasswordsMatch(data, encrypted) {
 }
 
 export async function hashPassword(password) {
-  await bcrypt.hash(password, SALT_ROUNDS);
+  return await bcrypt.hash(password, SALT_ROUNDS);
 }
