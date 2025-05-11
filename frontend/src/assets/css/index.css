@@ -200,6 +200,7 @@
 @utility container {
   padding-inline: 1.5rem;
   margin-inline: auto;
+  max-width: 1100px;
 }
 
 a,

@@ -2,14 +2,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { AxiosError } from "axios";
 import { ArrowRight, Lock } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { z } from "zod";
 
 import { register as registerFn } from "@/api/auth/register";
 import { FormError } from "@/components/form-error";
+import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
@@ -45,7 +46,7 @@ const registerSchema = z.object({
       path: ["confirmPassword"],
     });
   }
-});;
+});
 
 type RegisterSchema = z.infer<typeof registerSchema>;
 
@@ -54,13 +55,6 @@ export function RegisterPage() {
 
   const { register, handleSubmit, formState: { isSubmitting, errors } } = useForm<RegisterSchema>({
     resolver: zodResolver(registerSchema),
-    defaultValues: {
-      fullname: "teste",
-      email: "teste@teste.com",
-      username: "teste",
-      password: "teste123",
-      confirmPassword: "teste123",
-    },
   });
 
   async function handleRegister(data: RegisterSchema) {
@@ -83,12 +77,9 @@ export function RegisterPage() {
 
   return (
     <section>
-      <div className="mb-10">
-        <p className="font-mono text-2xl font-bold tracking-tight block mx-auto max-w-max">notes.app</p>
-      </div>
-
       <Card className="max-w-[40rem] mx-auto">
         <CardHeader>
+          <Logo className="mb-6 mx-auto" />
           <h1 className="font-bold text-xl lg:text-2xl">Register</h1>
           <p className="text-muted-foreground">Create and account for free</p>
         </CardHeader>
@@ -153,14 +144,16 @@ export function RegisterPage() {
               </div>
             </div>
 
-            <div className="flex justify-end">
-              <Button disabled={isSubmitting}>
-                Register
-                <ArrowRight />
-              </Button>
-            </div>
+            <Button disabled={isSubmitting}>
+              Register
+              <ArrowRight />
+            </Button>
           </form>
         </CardContent>
+
+        <CardFooter>
+          <Link to="/login" className="text-sm text-muted-foreground hover:underline">Already have an account? Log In</Link>
+        </CardFooter>
       </Card>
     </section>
   );
